@@ -1,11 +1,14 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="description" content="AION 2 class changes from the 11/11 and 11/14 Korean patches, with skill icons.">
+<meta name="description" content="AION 2 class rework and ongoing changes with skill icons. Made by notXeon.">
+<meta name="author" content="notXeon"><link rel="icon" href="notxeon.jpg">
+<meta property="og:title" content="AION 2 Class Rework + Ongoing Changes by notXeon"><meta property="og:description" content="Every class change from the KR patches with skill icons, class tabs and search.">
+<meta property="og:image" content="https://xeon007-cmd.github.io/aion2-class-changes/notxeon.jpg"><meta property="og:url" content="https://xeon007-cmd.github.io/aion2-class-changes/"><meta name="twitter:card" content="summary"><meta name="twitter:site" content="@notXeonTV">
 <title>AION 2 Class Rework + Ongoing Changes</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lora:wght@600&family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600&display=swap">
 <style>
 /* Layout: one reading column of skill cards under a sticky class switcher; dark notXeon look (near black, amber, bone) */
 :root{
@@ -23,7 +26,41 @@ body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.6 var(--body);
   background-repeat:no-repeat}
 body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:30;background:var(--bg)}
 .wrap{max-width:940px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
-header.hero{padding-block:44px 22px}
+.brandbar{border-bottom:1px solid var(--line)}
+.brandbar .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding-block:10px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--fg)}
+.brand img{width:36px;height:36px;border-radius:50%;box-shadow:0 0 0 1px var(--amber),0 0 14px rgba(232,150,62,.35)}
+.wm{font:600 21px/1 "Lora",Georgia,serif;letter-spacing:.03em;color:var(--fg)}
+.socials{display:flex;gap:4px;flex-wrap:wrap}
+.socials a{color:var(--muted);text-decoration:none;font:600 12.5px var(--display);padding:5px 9px;border-radius:8px}
+.socials a:hover{color:var(--fg);background:var(--panel)}
+.socials a.yt:hover{color:#ff4d6d}.socials a.tw:hover{color:#b48bff}.socials a.dc:hover{color:#8f99ff}
+header.hero{padding-block:36px 22px}
+.hero-grid{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:24px;align-items:center}
+.hero-av{width:170px;height:170px;border-radius:24px;object-fit:cover;opacity:.92;box-shadow:0 0 0 1px rgba(232,150,62,.45),0 20px 60px rgba(232,150,62,.18);
+  -webkit-mask-image:linear-gradient(180deg,#000 70%,transparent);mask-image:linear-gradient(180deg,#000 70%,transparent)}
+.byline{margin:12px 0 0;color:var(--muted);font-size:14px}
+.byline b{font:600 15px "Lora",Georgia,serif;color:var(--fg);letter-spacing:.02em}
+.byline a{color:var(--amber);text-decoration:none;font-weight:600}
+.cta{padding-block:10px 40px}
+.cta-box{display:flex;gap:22px;align-items:center;padding:24px;border-radius:18px;background:radial-gradient(500px 200px at 0 0,rgba(232,150,62,.14),transparent 70%),var(--panel);
+  border:1px solid transparent;background-clip:padding-box;position:relative}
+.cta-box::before{content:"";position:absolute;inset:-1px;border-radius:19px;padding:1px;background:linear-gradient(120deg,var(--amber),#2a2d35 50%,var(--steel));
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none}
+.cta-box img{width:88px;height:88px;border-radius:50%;flex:none;box-shadow:0 0 0 2px var(--amber),0 0 24px rgba(232,150,62,.4)}
+.cta-text{min-width:0}
+.cta h2{font:800 22px/1.2 var(--display);margin:8px 0 6px;text-wrap:balance}
+.cta p{margin:0 0 14px;color:var(--muted)}
+.cta-links{display:flex;gap:8px;flex-wrap:wrap}
+.btn{display:inline-block;text-decoration:none;font:700 13px var(--display);padding:9px 14px;border-radius:10px;border:1px solid #33363e;color:var(--fg)}
+.btn.yt{background:#ff0033;border-color:#ff0033;color:#fff}
+.btn.tw{background:#9146ff;border-color:#9146ff;color:#fff}
+.btn.dc{background:#5865f2;border-color:#5865f2;color:#fff}
+.btn:hover{filter:brightness(1.12)}
+footer .copy{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;color:var(--fg)}
+footer .copy .wm{font-size:17px}
+footer b{color:var(--fg)}
+@media (max-width:700px){.hero-av{display:none}.hero-grid{grid-template-columns:1fr}.cta-box{flex-direction:column;align-items:flex-start}.cta-box img{width:64px;height:64px}}
 .kicker{font:700 12px/1 var(--display);letter-spacing:.22em;text-transform:uppercase;color:var(--amber)}
 h1{font:800 clamp(30px,6vw,48px)/1.05 var(--display);text-transform:uppercase;letter-spacing:.01em;margin:12px 0 10px;text-wrap:balance}
 .sub{color:var(--muted);max-width:62ch;margin:0}
@@ -110,11 +147,25 @@ footer a{color:var(--fg)}
 </style>
 </head><body>
 
-<header class="hero"><div class="wrap">
+<div class="brandbar"><div class="wrap">
+  <a class="brand" href="https://www.youtube.com/@notXeonTV" target="_blank" rel="noopener"><img src="notxeon.jpg" alt="notXeon" width="36" height="36"><span class="wm">notXeon</span></a>
+  <nav class="socials" aria-label="notXeon socials">
+    <a href="https://www.youtube.com/@notXeonTV" target="_blank" rel="noopener" class="yt">YouTube</a>
+    <a href="https://twitch.tv/notxeon" target="_blank" rel="noopener" class="tw">Twitch</a>
+    <a href="https://discord.gg/8M9PDsFNgk" target="_blank" rel="noopener" class="dc">Discord</a>
+    <a href="https://tiktok.com/@notxeontv" target="_blank" rel="noopener">TikTok</a>
+    <a href="https://x.com/notXeonTV" target="_blank" rel="noopener">X</a>
+  </nav>
+</div></div>
+
+<header class="hero"><div class="wrap hero-grid"><div>
   <div class="kicker">AION 2 · Korean server · 11/11 and 11/14 updates</div>
   <h1>Class Rework + Ongoing Changes</h1>
   <p class="sub">Every class change from the last two patches in one place, newest on top, with the real skill icons. Pick your class or search any skill.</p>
+  <p class="byline">Made by <b>notXeon</b> · AION 2 guides on YouTube <a href="https://www.youtube.com/@notXeonTV" target="_blank" rel="noopener">@notXeonTV</a></p>
   <div class="stats" id="stats"></div>
+  </div>
+  <img class="hero-av" src="notxeon.jpg" alt="" aria-hidden="true">
 </div></header>
 
 <nav class="bar" aria-label="Classes"><div class="wrap">
@@ -132,8 +183,24 @@ footer a{color:var(--fg)}
 
 <main><div class="wrap" id="list"></div></main>
 
+<section class="cta"><div class="wrap"><div class="cta-box">
+  <img src="notxeon.jpg" alt="notXeon" width="88" height="88">
+  <div class="cta-text">
+    <div class="kicker">notXeon</div>
+    <h2>Want to know what these changes mean for your build?</h2>
+    <p>I make AION 2 guides on YouTube and play live on Twitch. Got a question about your class? Ask me in the Discord.</p>
+    <div class="cta-links">
+      <a class="btn yt" href="https://www.youtube.com/@notXeonTV" target="_blank" rel="noopener">YouTube @notXeonTV</a>
+      <a class="btn tw" href="https://twitch.tv/notxeon" target="_blank" rel="noopener">Twitch notXeon</a>
+      <a class="btn dc" href="https://discord.gg/8M9PDsFNgk" target="_blank" rel="noopener">notXeons Community</a>
+    </div>
+  </div>
+</div></div></section>
+
 <footer><div class="wrap">
-  <p>Unofficial fan translation of the official Korean update notes. 11/11 is based on the <a href="https://aion2.plaync.com/ko-kr/board/update/view?articleId=6af370b8577e8c01355e047b" target="_blank" rel="noopener">11/11 notes</a> as translated by <a href="https://oralino.github.io/aion2-class-changes/" target="_blank" rel="noopener">Oralino</a>. 11/14 is our own short version of the <a href="https://www.aion2timers.com/patch-notes/2026-11-14-update-notes/" target="_blank" rel="noopener">11/14 notes</a>, checked against the Korean text. Not affiliated with NCSOFT.</p>
+  <p class="copy"><span class="wm">notXeon</span> © 2026 notXeon. Page design, layout, skill icon matching and the 11/14 write up by notXeon. Please link back here instead of copying it.</p>
+  <p><b>Disclaimer:</b> fan made and unofficial. Not affiliated with or endorsed by NCSOFT. AION 2, its names and all skill icons belong to NCSOFT. Patch details can change, check the official notes if exact numbers matter.</p>
+  <p>Unofficial fan translation of the official Korean update notes. 11/11 is based on the <a href="https://aion2.plaync.com/ko-kr/board/update/view?articleId=6af370b8577e8c01355e047b" target="_blank" rel="noopener">11/11 notes</a> as translated by <a href="https://oralino.github.io/aion2-class-changes/" target="_blank" rel="noopener">Oralino</a>. 11/14 is our own short version of the <a href="https://www.aion2timers.com/patch-notes/2026-11-14-update-notes/" target="_blank" rel="noopener">11/14 notes</a>, checked against the Korean text.</p>
   <p>Stat names in brackets like Smite (강타) or Perfect (완벽) keep the Korean term because the global English name is not confirmed yet.</p>
   <p>Names marked <span class="dag">†</span> are new this patch and have no official English name yet. "Spec N" means the Nth specialization. Skill icons via <a href="https://questlog.gg/aion-2" target="_blank" rel="noopener">questlog.gg</a> and <a href="https://aion2hub.com" target="_blank" rel="noopener">aion2hub</a>.</p>
 </div></footer>

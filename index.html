@@ -161,9 +161,8 @@ footer a{color:var(--fg)}
 <header class="hero"><div class="wrap hero-grid"><div>
   <div class="kicker">AION 2 · Korean server · 11/11 and 11/14 updates</div>
   <h1>Class Rework + Ongoing Changes</h1>
-  <p class="sub">Every class change from the last two patches in one place, newest on top, with the real skill icons. Pick your class or search any skill.</p>
-  <p class="byline">Made by <b>notXeon</b> · AION 2 guides on YouTube <a href="https://www.youtube.com/@notXeonTV" target="_blank" rel="noopener">@notXeonTV</a></p>
-  <div class="stats" id="stats"></div>
+  <p class="sub">All the class changes from the KR patches in one spot. Newest ones are on top. Pick your class below or just search a skill.</p>
+  <p class="byline">Made by <b>notXeon</b> · <a href="https://www.youtube.com/@notXeonTV" target="_blank" rel="noopener">@notXeonTV</a></p>
   </div>
 </div></header>
 
@@ -176,7 +175,7 @@ footer a{color:var(--fg)}
     <button class="chip" data-p="11/11" aria-checked="false" role="radio">11/11 only</button>
   </div>
   <label class="search"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
-    <input id="q" type="search" placeholder="Search skills or changes, e.g. Frenzy, cooldown, 정령" autocomplete="off" aria-label="Search skills"><span class="count" id="count"></span></label>
+    <input id="q" type="search" placeholder="Search a skill, like Frenzy or Storm Spell" autocomplete="off" aria-label="Search skills"><span class="count" id="count"></span></label>
   </div>
 </div></nav>
 
@@ -186,8 +185,8 @@ footer a{color:var(--fg)}
   <img src="notxeon.jpg" alt="notXeon" width="88" height="88">
   <div class="cta-text">
     <div class="kicker">notXeon</div>
-    <h2>Want to know what these changes mean for your build?</h2>
-    <p>I make AION 2 guides on YouTube and play live on Twitch. Got a question about your class? Ask me in the Discord.</p>
+    <h2>Not sure what this means for your build?</h2>
+    <p>I make AION 2 guides on YouTube and stream on Twitch. Ask me anything about your class in the Discord.</p>
     <div class="cta-links">
       <a class="btn yt" href="https://www.youtube.com/@notXeonTV" target="_blank" rel="noopener">YouTube @notXeonTV</a>
       <a class="btn tw" href="https://twitch.tv/notxeon" target="_blank" rel="noopener">Twitch notXeon</a>
@@ -197,11 +196,11 @@ footer a{color:var(--fg)}
 </div></div></section>
 
 <footer><div class="wrap">
-  <p class="copy"><span class="wm">notXeon</span> © 2026 notXeon. Page design, layout, skill icon matching and the 11/14 write up by notXeon. Please link back here instead of copying it.</p>
-  <p><b>Disclaimer:</b> fan made and unofficial. Not affiliated with or endorsed by NCSOFT. AION 2, its names and all skill icons belong to NCSOFT. Patch details can change, check the official notes if exact numbers matter.</p>
-  <p>Unofficial fan translation of the official Korean update notes. 11/11 is based on the <a href="https://aion2.plaync.com/ko-kr/board/update/view?articleId=6af370b8577e8c01355e047b" target="_blank" rel="noopener">11/11 notes</a> as translated by <a href="https://oralino.github.io/aion2-class-changes/" target="_blank" rel="noopener">Oralino</a>. 11/14 is our own short version of the <a href="https://www.aion2timers.com/patch-notes/2026-11-14-update-notes/" target="_blank" rel="noopener">11/14 notes</a>, checked against the Korean text.</p>
-  <p>Stat names in brackets like Smite (강타) or Perfect (완벽) keep the Korean term because the global English name is not confirmed yet.</p>
-  <p>Names marked <span class="dag">†</span> are new this patch and have no official English name yet. "Spec N" means the Nth specialization. Skill icons via <a href="https://questlog.gg/aion-2" target="_blank" rel="noopener">questlog.gg</a> and <a href="https://aion2hub.com" target="_blank" rel="noopener">aion2hub</a>.</p>
+  <p class="copy"><span class="wm">notXeon</span> © 2026 notXeon. I made this page, matched the skill icons and wrote up the 11/14 changes. Link here instead of copying it, thanks.</p>
+  <p><b>Disclaimer:</b> fan made, not official. Not linked to or endorsed by NCSOFT. AION 2 and the skill icons belong to NCSOFT. Numbers can still change, so check the official notes if you need them exact.</p>
+  <p>The 11/11 changes come from <a href="https://oralino.github.io/aion2-class-changes/" target="_blank" rel="noopener">Oralino's translation</a> of the official <a href="https://aion2.plaync.com/ko-kr/board/update/view?articleId=6af370b8577e8c01355e047b" target="_blank" rel="noopener">11/11 notes</a>. For 11/14 I wrote my own short version of the <a href="https://www.aion2timers.com/patch-notes/2026-11-14-update-notes/" target="_blank" rel="noopener">11/14 notes</a> and checked it against the Korean text.</p>
+  <p>Stats like Smite (강타) and Perfect (완벽) keep the Korean in brackets since the global English name isn't confirmed yet.</p>
+  <p>A <span class="dag">†</span> means the skill is new and has no official English name yet. Spec 3 means your third specialization, and so on. Icons from <a href="https://questlog.gg/aion-2" target="_blank" rel="noopener">questlog.gg</a> and <a href="https://aion2hub.com" target="_blank" rel="noopener">aion2hub</a>.</p>
 </div></footer>
 
 <script>
@@ -263,7 +262,7 @@ function render(){
         return `<article class="card${ps.includes('11/14')?' hot':''}">${iconHtml(r)}<div><div class="names">${r.skills.map(s=>nameHtml(s,term)).join('')}</div>${body}</div></article>`;
       }).join('')+`</div></section>`;
   });
-  $('#list').innerHTML=out||`<div class="empty">Nothing matches "${esc(term)}"${tab!=='all'?' in this class. Try All.':'.'}</div>`;
+  $('#list').innerHTML=out||`<div class="empty">Nothing found for "${esc(term)}"${tab!=='all'?' in this class. Try All.':'.'}</div>`;
   $('#count').textContent=term?`${total} found`:'';
 }
 function setTab(id,push){
@@ -275,9 +274,6 @@ function setTab(id,push){
   const b=document.querySelector(`.tab[data-id="${tab}"]`); b&&b.scrollIntoView({inline:'nearest',block:'nearest'});
 }
 function init(){
-  const skills=DATA.reduce((a,c)=>a+c.rows.reduce((x,r)=>x+r.skills.length,0),0);
-  const n14=DATA.reduce((a,c)=>a+c.rows.filter(r=>r.changes.some(x=>x.p==='11/14')).length,0);
-  $('#stats').innerHTML=`<span><b>${DATA.length-1}</b> classes</span><span><b>${skills}</b> skills changed</span><span><b>${n14}</b> touched again on 11/14</span>`;
   $('#tabs').innerHTML=[{id:'all',name:'All',n:DATA.reduce((a,c)=>a+c.rows.length,0)}].concat(DATA.map(c=>({id:c.id,name:c.name,n:c.rows.length})))
     .map(c=>`<button class="tab" role="tab" data-id="${c.id}" aria-selected="false">${c.name}<span class="n">${c.n}</span></button>`).join('');
   $('#tabs').addEventListener('click',e=>{const b=e.target.closest('.tab');if(b){setTab(b.dataset.id,true);window.scrollTo({top:Math.min(window.scrollY,$('header.hero').offsetHeight)});}});

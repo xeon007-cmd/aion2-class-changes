@@ -134,6 +134,14 @@ ul.ch li.note::before{display:none}
 .spec{display:inline-block;font:700 10.5px/1 var(--display);letter-spacing:.08em;text-transform:uppercase;padding:4px 7px;border-radius:6px;background:#2a1e12;color:var(--hot);vertical-align:1px;margin-right:2px}
 .mode{display:inline-block;font:700 10.5px/1 var(--display);letter-spacing:.06em;padding:3px 6px;border-radius:5px;border:1px solid #33363e;color:var(--fg);vertical-align:1px}
 mark{background:rgba(232,150,62,.28);color:inherit;border-radius:3px;padding:0 1px}
+.chip .n{margin-left:6px;font:600 11px var(--body);color:var(--old);font-variant-numeric:tabular-nums}
+.chip[aria-checked="true"] .n{color:var(--amber)}
+.tab.zero:not([aria-selected="true"]),.chip.zero:not([aria-checked="true"]){opacity:.4}
+.empty p{margin:0 0 14px}
+.empty .sub2{margin:22px 0 10px;font-size:13px}
+.acts{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.btn.ghost{background:var(--panel);cursor:pointer;font-family:var(--display)}
+.btn.ghost:hover{border-color:var(--amber);color:var(--hot)}
 .empty{padding:50px 0;text-align:center;color:var(--muted)}
 footer{border-top:1px solid var(--line);padding-block:26px 40px;color:var(--muted);font-size:13px}
 footer p{margin:0 0 6px;max-width:75ch}
@@ -244,13 +252,43 @@ const pcls=p=>p===NEWEST?'p1114':'p1111';
 function rowText(r,ch){return (r.skills.map(s=>s.en+' '+s.ko).join(' ')+' '+ch.map(x=>x.t).join(' ')).toLowerCase();}
 function lines(ch,term){return `<ul class="ch">${ch.map(x=>`<li${x.t.startsWith('*')?' class="note"':''}>${fmt(x.t.replace(/^\*/,''),term)}</li>`).join('')}</ul>`;}
 
+function match(c,pt,lt){
+  return c.rows.map(r=>({r,ch:r.changes.filter(x=>pt==='all'||x.p===pt)}))
+    .filter(o=>o.ch.length&&(!lt||rowText(o.r,o.ch).includes(lt)));
+}
+const cname=id=>(DATA.classes.find(c=>c.id===id)||{}).name;
+function emptyHtml(term,lt){
+  const where=tab!=='all'?cname(tab):'';
+  const btn=(act,label)=>`<button class="btn ghost" data-act="${act}">${label}</button>`;
+  let msg, acts=[];
+  if(!term){
+    msg=where?`${where} had no changes in ${patch}.`:`No changes in ${patch}.`;
+    const others=DATA.classes.filter(c=>c.id!=='common'&&match(c,patch,'').length).map(c=>`<button class="btn ghost" data-act="tab:${c.id}">${esc(c.name)}</button>`);
+    acts.push(btn('patch:all','Show all patches for '+(where||'every class')));
+    if(others.length) return `<div class="empty"><p>${msg}</p><div class="acts">${acts.join('')}</div><p class="sub2">Classes that changed in ${patch}:</p><div class="acts">${others.join('')}</div></div>`;
+  }else{
+    msg=`Nothing matches "${esc(term)}"`+(where?` in ${where}`:'')+(patch!=='all'?` for ${patch}`:'')+'.';
+    if(tab!=='all'&&DATA.classes.some(c=>match(c,patch,lt).length)) acts.push(btn('tab:all','Search every class'));
+    if(patch!=='all'&&DATA.classes.some(c=>(tab==='all'||c.id===tab)&&match(c,'all',lt).length)) acts.push(btn('patch:all','Search all patches'));
+    acts.push(btn('clear','Clear search'));
+  }
+  return `<div class="empty"><p>${msg}</p><div class="acts">${acts.join('')}</div></div>`;
+}
 function render(){
   const term=q.trim(), lt=term.toLowerCase();
   let total=0, out='';
+  // live counts on class tabs and patch chips
+  document.querySelectorAll('.tab').forEach(b=>{
+    const n=b.dataset.id==='all'?DATA.classes.reduce((a,c)=>a+match(c,patch,lt).length,0):match(DATA.classes.find(c=>c.id===b.dataset.id),patch,lt).length;
+    b.querySelector('.n').textContent=n; b.classList.toggle('zero',!n);
+  });
+  document.querySelectorAll('.chip').forEach(b=>{
+    const n=DATA.classes.filter(c=>tab==='all'||c.id===tab).reduce((a,c)=>a+match(c,b.dataset.p,lt).length,0);
+    b.querySelector('.n').textContent=n; b.classList.toggle('zero',!n);
+  });
   DATA.classes.forEach(c=>{
     if(tab!=='all'&&c.id!==tab) return;
-    const rows=c.rows.map(r=>({r,ch:r.changes.filter(x=>patch==='all'||x.p===patch)}))
-      .filter(o=>o.ch.length&&(!lt||rowText(o.r,o.ch).includes(lt)));
+    const rows=match(c,patch,lt);
     if(!rows.length) return;
     total+=rows.length;
     out+=`<section class="cls" id="sec-${c.id}"><div class="cls-head"><h2>${esc(c.name)}</h2><span class="ko">${esc(c.ko)}</span><span class="cnt">${rows.length} ${rows.length===1?'skill':'skills'}</span></div><div class="cards">`+
@@ -260,8 +298,13 @@ function render(){
         return `<article class="card${ps.includes(NEWEST)?' hot':''}">${iconHtml(r)}<div><div class="names">${r.skills.map(s=>nameHtml(s,term)).join('')}</div>${body}</div></article>`;
       }).join('')+`</div></section>`;
   });
-  $('#list').innerHTML=out||`<div class="empty">Nothing found for "${esc(term)}"${tab!=='all'?' in this class. Try All.':'.'}</div>`;
+  $('#list').innerHTML=out||emptyHtml(term,lt);
   $('#count').textContent=term?`${total} found`:'';
+}
+function setPatch(p){
+  patch=PATCHES.includes(p)?p:'all';
+  document.querySelectorAll('.chip').forEach(x=>x.setAttribute('aria-checked',x.dataset.p===patch));
+  render();
 }
 function setTab(id,push){
   tab=DATA.classes.some(c=>c.id===id)?id:'all';
@@ -272,7 +315,7 @@ function setTab(id,push){
   const b=document.querySelector(`.tab[data-id="${tab}"]`); b&&b.scrollIntoView({inline:'nearest',block:'nearest'});
 }
 function init(){
-  $('#patches').innerHTML=['all'].concat(PATCHES).map(p=>`<button class="chip" data-p="${p}" aria-checked="${p==='all'}" role="radio">${p==='all'?'All patches':p}</button>`).join('');
+  $('#patches').innerHTML=['all'].concat(PATCHES).map(p=>`<button class="chip" data-p="${p}" aria-checked="${p==='all'}" role="radio">${p==='all'?'All patches':p}<span class="n"></span></button>`).join('');
   const fmtD=d=>new Date(d+'T00:00:00').toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
   $('#upd').textContent='updated '+fmtD(DATA.updated||DATA.patches[0].date);
   $('#sources').innerHTML='Sources, newest first: '+DATA.patches.map(p=>`<a href="${p.source}" target="_blank" rel="noopener">${p.id}</a>`+(p.also||[]).map(a=>`, <a href="${a.source}" target="_blank" rel="noopener">${a.id}</a>`).join('')+(p.credit?` (via <a href="${p.credit.url}" target="_blank" rel="noopener">${esc(p.credit.name)}</a>)`:'')).join(', ')+'. Everything else is my own short version of the official notes, checked against the Korean or Chinese text.';
@@ -280,8 +323,9 @@ function init(){
     .map(c=>`<button class="tab" role="tab" data-id="${c.id}" aria-selected="false">${c.name}<span class="n">${c.n}</span></button>`).join('');
   $('#tabs').addEventListener('click',e=>{const b=e.target.closest('.tab');if(b){setTab(b.dataset.id,true);window.scrollTo({top:Math.min(window.scrollY,$('header.hero').offsetHeight)});}});
   $('#q').addEventListener('input',e=>{q=e.target.value;render();});
-  $('#patches').addEventListener('click',e=>{const b=e.target.closest('.chip');if(!b)return;patch=b.dataset.p;
-    document.querySelectorAll('.chip').forEach(x=>x.setAttribute('aria-checked',x===b));render();});
+  $('#patches').addEventListener('click',e=>{const b=e.target.closest('.chip');if(b)setPatch(b.dataset.p);});
+  $('#list').addEventListener('click',e=>{const b=e.target.closest('[data-act]');if(!b)return;const [k,v]=b.dataset.act.split(':');
+    if(k==='patch')setPatch(v); else if(k==='tab')setTab(v,true); else if(k==='clear'){q='';$('#q').value='';render();}});
   window.addEventListener('hashchange',()=>setTab(location.hash.slice(1),false));
   let start=location.hash.slice(1);
   if(!start){try{start=localStorage.getItem(KEY)||'all'}catch(e){start='all'}}
